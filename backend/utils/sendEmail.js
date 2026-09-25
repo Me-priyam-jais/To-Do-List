@@ -1,34 +1,21 @@
 import nodemailer from "nodemailer";
 
 export const sendEmail = async (userEmail, subject, message) => {
-  const smtpMail = process.env.SMTP_MAIL;
-  const smtpPassword = process.env.SMTP_PASSWORD;
-  const smtpPort = Number(process.env.SMTP_PORT || 465);
-
-  if (!smtpMail || !smtpPassword) {
-    throw new Error(
-      "SMTP credentials are missing. Add SMTP_MAIL and SMTP_PASSWORD in backend/config/config.env.",
-    );
-  }
-
+  
   const transporter = nodemailer.createTransport({
-    service: "gmail",
-    host: process.env.SMTP_HOST || "smtp.gmail.com",
-    port: smtpPort,
-    secure: smtpPort === 465,
+    service: process.env.SMTP_SERVICE,
+    host: process.env.SMTP_HOST,
+    port: process.env.SMTP_PORT,
     auth: {
-      user: smtpMail,
-      pass: smtpPassword,
-    },
-    tls: {
-      rejectUnauthorized: false,
+      user: process.env.SMTP_MAIL,
+      pass: process.env.SMTP_PASSWORD,
     },
   });
 
   try {
     await transporter.verify();
     await transporter.sendMail({
-      from: smtpMail,
+      from: process.env.SMTP_MAIL,
       to: userEmail,
       subject: subject,
       html: message,
