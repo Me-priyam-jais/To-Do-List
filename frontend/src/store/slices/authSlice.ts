@@ -43,8 +43,6 @@ const authSlice = createSlice({
     OTPVerificationSuccess(state, action) {
       state.loading = false;
       state.message = action.payload.message;
-      state.isAuthenticated = true;
-      state.user = action.payload.user;
     },
     OTPVerificationFailed(state, action) {
       state.loading = false;
