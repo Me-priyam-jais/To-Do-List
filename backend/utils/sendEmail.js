@@ -1,32 +1,18 @@
-import nodemailer from "nodemailer";
+import {Resend} from 'resend'
+
 
 export const sendEmail = async (userEmail, subject, message) => {
-  
-  const transporter = nodemailer.createTransport({
-    host: process.env.SMTP_HOST,
-    port: 587,
-    secure: false,
-    family: 4,
-    auth: {
-      user: process.env.SMTP_MAIL,
-      pass: process.env.SMTP_PASSWORD,
-    },
+const resend = new Resend(process.env.RESEND_API_KEY);
+  const {data,error} = await resend.emails.send({
+    from:"ToDo App<onboarding@resend.dev>",
+    to:[userEmail],
+    subject,
+    html:message,
   });
-
-  try {
-    await transporter.verify();
-    await transporter.sendMail({
-      from: process.env.SMTP_MAIL,
-      to: userEmail,
-      subject: subject,
-      html: message,
-    });
-  } catch (error) {
-    console.error("Failed to verify or send the Email.", {
-      message: error.message,
-      code: error.code,
-      response: error.response,
-    });
-    throw error;
+  if(error){
+    console.log("Resend Error",error)
+    throw new Error(error.message);
   }
+  console.log("Email send:",data?.id);
+  return data;
 };
