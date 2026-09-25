@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { useAppDispatch, useAppSelector } from "./store/hooks";
+import { useAppDispatch } from "./store/hooks";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import ForgotPassword from "./pages/ForgotPassword";
 import Login from "./pages/Login";
@@ -17,11 +17,10 @@ import { getUser } from "./store/slices/authSlice";
 
 export default function App() {
   const dispatch = useAppDispatch();
-  const { isAuthenticated } = useAppSelector((state) => state.auth);
 
   useEffect(() => {
       dispatch(getUser());
-  }, [dispatch,isAuthenticated]);
+  }, [dispatch]);
 
   return (
     <Router>

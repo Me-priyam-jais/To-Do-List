@@ -1,5 +1,6 @@
 export const sendToken = (user, statusCode, message, res) => {
   const token = user.generateToken();
+  const isProduction = process.env.FRONTEND_URL?.startsWith("https://");
   const safeUser = {
     _id: user._id,
     name: user.name,
@@ -14,6 +15,8 @@ export const sendToken = (user, statusCode, message, res) => {
         Date.now() + process.env.COOKIE_EXPIRE * 24 * 60 * 60 * 1000,
       ),
       httpOnly: true,
+      secure: isProduction,
+      sameSite: isProduction ? "none" : "lax",
     })
     .json({
       success: true,
