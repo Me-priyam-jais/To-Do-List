@@ -13,6 +13,7 @@ import Home from "./pages/Home";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { getUser } from "./store/slices/authSlice";
+import ThemeToggle from "./components/ThemeToggle";
 
 
 export default function App() {
@@ -37,6 +38,7 @@ export default function App() {
         <Route path="/password/update/:email" element={<UpdatePassword />} />
         <Route path="/task/list" element={<List />} />
       </Routes>
+      <ThemeToggle />
       <ToastContainer />
     </Router>
   );
