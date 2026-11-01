@@ -3,6 +3,7 @@ import { useAppDispatch, useAppSelector } from "../store/hooks";
 import { addTask } from "../store/slices/taskSlice";
 import { toggleAddTaskPopUp } from "../store/slices/popUpSlice";
 import type { Task } from "../types/task";
+import { fromDateTimeLocalInput } from "../utils/taskDeadline";
 
 export type { Task };
 export type task = Task;
@@ -29,7 +30,12 @@ export default function AddTask() {
 
   async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    const succeeded = await dispatch(addTask(newTask));
+    const succeeded = await dispatch(
+      addTask({
+        ...newTask,
+        deadline: fromDateTimeLocalInput(newTask.deadline ?? ""),
+      }),
+    );
     if (succeeded) {
       dispatch(toggleAddTaskPopUp());
     }
@@ -67,11 +73,11 @@ export default function AddTask() {
             />
             <input
               className="block h-7 p-2 my-10 text-md w-full outline-1 outline-blue-300 rounded-md bg-blue-50 focus:outline-2 focus:outline-blue-400 hover:outline-blue-400 hover:outline-2"
-              type="text"
+              type="datetime-local"
               name="deadline"
-              placeholder="Task Deadline (Optional)"
+              aria-label="Task deadline (optional)"
               onChange={handleNewTaskChanges}
-              value={newTask.deadline}
+              value={newTask.deadline ?? ""}
             />
 
             <textarea

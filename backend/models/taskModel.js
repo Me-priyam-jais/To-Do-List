@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 
 const taskSchema = new mongoose.Schema({
   title: { type: String, required: true },
-  deadline: { type: String },
+  deadline: { type: Date },
   description: { type: String },
   status: { type: Boolean, default: false },
 });

@@ -2,13 +2,20 @@ import { useState, type ChangeEvent, type FormEvent } from "react";
 import { useAppDispatch } from "../store/hooks";
 import { updateTask } from "../store/slices/taskSlice";
 import type { Task } from "../types/task";
+import {
+  fromDateTimeLocalInput,
+  toDateTimeLocalInput,
+} from "../utils/taskDeadline";
 
 interface UpdateTaskProps {
   task: Task;
   onClose: () => void;
 }
 export default function UpdateTask({ task, onClose }: UpdateTaskProps) {
-  const [updatedToTask, setUpdatedToTask] = useState<Task>(task);
+  const [updatedToTask, setUpdatedToTask] = useState<Task>({
+    ...task,
+    deadline: toDateTimeLocalInput(task.deadline),
+  });
   const dispatch = useAppDispatch();
 
   const handleTaskChanges = (
@@ -24,7 +31,13 @@ export default function UpdateTask({ task, onClose }: UpdateTaskProps) {
   async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const succeeded = await dispatch(
-      updateTask(updatedToTask, updatedToTask._id),
+      updateTask(
+        {
+          ...updatedToTask,
+          deadline: fromDateTimeLocalInput(updatedToTask.deadline ?? ""),
+        },
+        updatedToTask._id,
+      ),
     );
     if (succeeded) {
       onClose();
@@ -61,10 +74,10 @@ export default function UpdateTask({ task, onClose }: UpdateTaskProps) {
             />
             <input
               className="block h-7 p-2 my-10 text-md w-full outline-1 outline-blue-300 rounded-md bg-blue-50 focus:outline-2 focus:outline-blue-400 hover:outline-blue-400 hover:outline-2"
-              type="text"
+              type="datetime-local"
               name="deadline"
-              placeholder="Task Deadline (Optional)"
-              value={updatedToTask.deadline}
+              aria-label="Task deadline (optional)"
+              value={updatedToTask.deadline ?? ""}
               onChange={handleTaskChanges}
             />
 
